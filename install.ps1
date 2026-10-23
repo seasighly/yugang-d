@@ -5,9 +5,8 @@
 #  它会：检查并补齐 WebView2 / Node.js / DSH，然后下载安装鱼缸D 并创建快捷方式
 # ============================================================
 
-param(
-    [string]$LocalZip = ""    # 本地安装包路径，留空则从 GitHub 下载
-)
+# 可用环境变量 YGD_LOCALZIP 指定本地安装包（离线/测试用），留空则从 GitHub 下载
+$LocalZip = $env:YGD_LOCALZIP
 
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'

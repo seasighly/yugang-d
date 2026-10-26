@@ -71,6 +71,11 @@ foreach ($src in $sources) {
 if (-not $content) { Say "  cannot download installer" Red; exit 1 }
 Invoke-Expression $content
 
+# installer may be a cached older copy that does not write VERSION - do it here too
+try {
+    if (Test-Path $InstallDir) { Set-Content -Path $VerFile -Value $latest -Encoding ASCII }
+} catch { }
+
 Say ""
 Say "  Update finished ($latest)." Green
 Say ""

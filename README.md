@@ -21,7 +21,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 国内网络拉不动 raw 时用镜像：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://cdn.jsdelivr.net/gh/seasighly/yugang-d@v1.3.5/install.ps1 | iex"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://cdn.jsdelivr.net/gh/seasighly/yugang-d@v1.3.6/install.ps1 | iex"
 ```
 
 安装脚本会自动：

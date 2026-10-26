@@ -14,8 +14,8 @@ $ProgressPreference = 'SilentlyContinue'
 try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch { }
 
 $GitHubRepo = 'seasighly/yugang-d'
-$AssetName  = 'YGD-v1.3.5.zip'
-$Version    = '1.3.5'
+$AssetName  = 'YGD-v1.3.6.zip'
+$Version    = '1.3.6'
 $AppName    = 'YuGangD'
 $InstallDir = Join-Path $env:LOCALAPPDATA $AppName
 

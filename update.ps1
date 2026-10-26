@@ -30,13 +30,35 @@ Say "  installed : $local"
 
 # ---- latest version ----
 $latest = $null
-try {
-    $api = "https://api.github.com/repos/$GitHubRepo/releases/latest"
-    $rel = Invoke-RestMethod -Uri $api -UseBasicParsing -TimeoutSec 20 `
-        -Headers @{ 'User-Agent' = 'YuGangD-updater'; 'Accept' = 'application/vnd.github+json' }
-    $latest = $rel.tag_name -replace '^v', ''
-} catch {
-    Say "  could not reach GitHub: $($_.Exception.Message)" Yellow
+
+# 1) GitHub API (has rate limits, may time out)
+for ($i = 1; $i -le 3 -and -not $latest; $i++) {
+    try {
+        $rel = Invoke-RestMethod -Uri "https://api.github.com/repos/$GitHubRepo/releases/latest" -UseBasicParsing -TimeoutSec 20 `
+            -Headers @{ 'User-Agent' = 'YuGangD-updater'; 'Accept' = 'application/vnd.github+json' }
+        $latest = $rel.tag_name -replace '^v', ''
+    } catch {
+        Start-Sleep -Seconds 2
+    }
+}
+
+# 2) fallback: follow the /releases/latest redirect (no API, no rate limit)
+if (-not $latest) {
+    try {
+        $r = Invoke-WebRequest -Uri "https://github.com/$GitHubRepo/releases/latest" -Method Head `
+            -UseBasicParsing -MaximumRedirection 0 -ErrorAction Stop -TimeoutSec 20
+        $loc = $r.Headers['Location']
+        if ($loc -and $loc -match '/tag/(v?[\d.]+)$') { $latest = $Matches[1] -replace '^v', '' }
+    } catch {
+        $resp = $_.Exception.Response
+        if ($resp -and $resp.Headers['Location'] -and $resp.Headers['Location'] -match '/tag/(v?[\d.]+)$') {
+            $latest = $Matches[1] -replace '^v', ''
+        }
+    }
+}
+
+if (-not $latest) {
+    Say "  could not reach GitHub (api + redirect both failed)" Yellow
     Say "  try again later, or rerun install.ps1" Yellow
     exit 1
 }

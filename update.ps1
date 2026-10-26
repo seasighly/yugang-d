@@ -53,9 +53,23 @@ Say ""
 Say "  Updating $local -> $latest ..." Yellow
 Say ""
 
-# ---- run installer (idempotent: stops app, replaces files, rebuilds shortcuts) ----
-$script = Invoke-WebRequest -Uri "$RawBase/install.ps1" -UseBasicParsing -TimeoutSec 30
-Invoke-Expression $script.Content
+# ---- fetch the installer (raw CDN can be stale, so verify the version inside) ----
+$sources = @(
+    "https://raw.githubusercontent.com/$GitHubRepo/main/install.ps1",
+    "https://cdn.jsdelivr.net/gh/$GitHubRepo@main/install.ps1"
+)
+$content = $null
+foreach ($src in $sources) {
+    try {
+        $c = (Invoke-WebRequest -Uri $src -UseBasicParsing -TimeoutSec 25).Content
+        $m = [regex]::Match($c, "AssetName\s*=\s*'([^']+)'")
+        $v = if ($m.Success) { $m.Groups[1].Value } else { '' }
+        if ($v -and $v -match [regex]::Escape($latest)) { $content = $c; Say "  installer from $src" Gray; break }
+        if (-not $content) { $content = $c }   # keep as fallback
+    } catch { }
+}
+if (-not $content) { Say "  cannot download installer" Red; exit 1 }
+Invoke-Expression $content
 
 Say ""
 Say "  Update finished ($latest)." Green

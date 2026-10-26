@@ -116,6 +116,19 @@ Say "[3/4] Downloading $AppName"
 $zipPath = Join-Path $env:TEMP 'YuGangD-latest.zip'
 $url = "https://github.com/$GitHubRepo/releases/latest/download/$AssetName"
 
+# prefer the real URL of the newest release asset (survives a stale cached script)
+try {
+    $rel = Invoke-RestMethod -Uri "https://api.github.com/repos/$GitHubRepo/releases/latest" -UseBasicParsing -TimeoutSec 15 `
+        -Headers @{ 'User-Agent' = 'YuGangD-installer'; 'Accept' = 'application/vnd.github+json' }
+    if ($rel.assets -and $rel.assets.Count -gt 0) {
+        $url = $rel.assets[0].browser_download_url
+        $Version = $rel.tag_name -replace '^v', ''
+        Say "  latest release: $($rel.tag_name)" Gray
+    }
+} catch {
+    Warn "GitHub API unreachable, falling back to fixed asset name"
+}
+
 if ($LocalZip) {
     if (-not (Test-Path $LocalZip)) { Bad "local zip not found: $LocalZip"; exit 1 }
     Copy-Item $LocalZip $zipPath -Force

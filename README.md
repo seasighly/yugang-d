@@ -51,7 +51,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 国内拉不动 raw 用镜像：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://cdn.jsdelivr.net/gh/seasighly/yugang-d@v1.3.6/install.ps1 | iex"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://cdn.jsdelivr.net/gh/seasighly/yugang-d@v1.3.7/install.ps1 | iex"
 ```
 
 装完会在桌面和开始菜单各留一个 `YuGangD` 快捷方式。
@@ -70,7 +70,6 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://cdn.jsdelivr
 
 - **隐藏任务栏** —— 连任务栏一起藏掉，画面自动铺满整屏
 - **跳过切换动画** —— 直接切模式（带 260ms 交叉溶解）
-- **标定模式** —— 重新标定热区：在画面上点边界点，回车提交
 - **重启浮层 DSH** —— 重新取一次 token 并刷新浮窗
 - **重新加载 / 退出**
 
@@ -102,7 +101,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 只想手动换安装包：
 
 ```powershell
-curl -L -o "%TEMP%\ygd.zip" https://github.com/seasighly/yugang-d/releases/latest/download/YGD-v1.3.6.zip
+curl -L -o "%TEMP%\ygd.zip" https://github.com/seasighly/yugang-d/releases/latest/download/YGD-v1.3.7.zip
 ```
 
 解压覆盖到 `%LOCALAPPDATA%\YuGangD`（覆盖前先退出鱼缸D）。
@@ -155,7 +154,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 |---|---|
 | `csc.exe`（.NET Framework 自带） | 编译 C#，无需 VS / MSBuild |
 | ffmpeg | 剪辑、烘焙无缝循环、抽帧 |
-| potrace | 位图轮廓转 SVG 路径（标定热区用） |
+| potrace | 位图轮廓转 SVG 路径（开发期提取热区路径用） |
 | Python + Pillow | 生成羽化遮罩、批量处理素材 |
 
 ---
